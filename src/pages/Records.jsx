@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { subscribeStudents, subscribeViolations, clearAllViolations } from '../firebaseService';
 import { Search, FileText, Trash2, Inbox } from 'lucide-react';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 export default function Records({ showToast }) {
     const [students, setStudents] = useState([]);
@@ -43,12 +43,12 @@ export default function Records({ showToast }) {
             .sort((a, b) => b.totalFine - a.totalFine)
             .map((s, i) => [i + 1, s.name, s.room || '-', s.class || '-', s.totalFine]);
 
-        doc.autoTable({
+        autoTable(doc, {
             startY: 34,
             head: [['#', 'Name', 'Room', 'Class', 'Total Fine']],
             body: rows,
             theme: 'grid',
-            headStyles: { fillColor: [16, 185, 129] },
+            headStyles: { fillColor: [17, 17, 17] },
             styles: { fontSize: 9 }
         });
 

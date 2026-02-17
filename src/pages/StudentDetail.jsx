@@ -8,7 +8,7 @@ import {
 } from '../firebaseService';
 import { ArrowLeft, FileText, Trash2, X, CheckCircle } from 'lucide-react';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 export default function StudentDetail({ showToast }) {
     const { studentId } = useParams();
@@ -57,12 +57,12 @@ export default function StudentDetail({ showToast }) {
 
         const rows = violations.map((v, i) => [i + 1, v.date, v.prayer, v.type, v.fine]);
 
-        doc.autoTable({
+        autoTable(doc, {
             startY: 40,
             head: [['#', 'Date', 'Prayer', 'Violation', 'Fine']],
             body: rows,
             theme: 'grid',
-            headStyles: { fillColor: [16, 185, 129] },
+            headStyles: { fillColor: [17, 17, 17] },
             styles: { fontSize: 9 }
         });
 
