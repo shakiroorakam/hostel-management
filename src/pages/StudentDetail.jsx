@@ -15,6 +15,7 @@ export default function StudentDetail({ showToast }) {
     const [student, setStudent] = useState(null);
     const [violations, setViolations] = useState([]);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [confirmDeleteViolation, setConfirmDeleteViolation] = useState(null);
 
     useEffect(() => {
         const unsub1 = subscribeStudents((students) => {
@@ -27,10 +28,12 @@ export default function StudentDetail({ showToast }) {
         return () => { unsub1(); unsub2(); };
     }, [studentId]);
 
-    const handleDelete = async (v) => {
+    const handleDelete = async () => {
+        if (!confirmDeleteViolation) return;
         try {
-            await deleteViolation(v.id, v.studentId, v.fine);
+            await deleteViolation(confirmDeleteViolation.id, confirmDeleteViolation.studentId, confirmDeleteViolation.fine);
             showToast('Violation removed', 'success');
+            setConfirmDeleteViolation(null);
         } catch (err) {
             showToast('Error: ' + err.message, 'error');
         }
@@ -141,7 +144,7 @@ export default function StudentDetail({ showToast }) {
                             <span className="fine-badge fine-badge-red">{v.fine}</span>
                             <button
                                 className="btn btn-outline btn-icon"
-                                onClick={() => handleDelete(v)}
+                                onClick={() => setConfirmDeleteViolation(v)}
                                 title="Delete"
                                 style={{ color: 'var(--danger)' }}
                             >
@@ -150,6 +153,21 @@ export default function StudentDetail({ showToast }) {
                         </div>
                     </div>
                 ))
+            )}
+
+            {confirmDeleteViolation && (
+                <div className="modal-overlay" onClick={() => setConfirmDeleteViolation(null)}>
+                    <div className="modal" onClick={e => e.stopPropagation()}>
+                        <h3>Delete Violation?</h3>
+                        <p className="confirm-text">
+                            Remove this <strong>{confirmDeleteViolation.type}</strong> violation (Fine: {confirmDeleteViolation.fine}) from {confirmDeleteViolation.date}?
+                        </p>
+                        <div className="btn-row">
+                            <button className="btn btn-outline btn-sm" onClick={() => setConfirmDeleteViolation(null)}>Cancel</button>
+                            <button className="btn btn-danger btn-sm" onClick={handleDelete}>Yes, Delete</button>
+                        </div>
+                    </div>
+                </div>
             )}
 
             {showConfirm && (
