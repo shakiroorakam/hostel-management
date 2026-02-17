@@ -56,7 +56,10 @@ export default function Records({ showToast }) {
         doc.setFontSize(12);
         doc.text(`Total Fines: ${totalFine}`, 14, doc.lastAutoTable.finalY + 12);
 
-        doc.save('managea-fines.pdf');
+        const blob = doc.output('blob');
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
         showToast('PDF exported', 'success');
     };
 
